@@ -1,0 +1,10 @@
+C:\Users\long2\source\repos\CompareExcelFiles\CompareExcelFiles\bin\Debug\CompareExcelFiles.exe.config
+C:\Users\long2\source\repos\CompareExcelFiles\CompareExcelFiles\bin\Debug\CompareExcelFiles.exe
+C:\Users\long2\source\repos\CompareExcelFiles\CompareExcelFiles\bin\Debug\CompareExcelFiles.pdb
+C:\Users\long2\source\repos\CompareExcelFiles\CompareExcelFiles\obj\Debug\CompareExcelFiles.Form1.resources
+C:\Users\long2\source\repos\CompareExcelFiles\CompareExcelFiles\obj\Debug\CompareExcelFiles.Properties.Resources.resources
+C:\Users\long2\source\repos\CompareExcelFiles\CompareExcelFiles\obj\Debug\CompareExcelFiles.csproj.GenerateResource.Cache
+C:\Users\long2\source\repos\CompareExcelFiles\CompareExcelFiles\obj\Debug\CompareExcelFiles.csproj.CoreCompileInputs.cache
+C:\Users\long2\source\repos\CompareExcelFiles\CompareExcelFiles\obj\Debug\CompareExcelFiles.exe
+C:\Users\long2\source\repos\CompareExcelFiles\CompareExcelFiles\obj\Debug\CompareExcelFiles.pdb
+C:\Users\long2\source\repos\CompareExcelFiles\CompareExcelFiles\obj\Debug\CompareExcelFiles.csprojResolveAssemblyReference.cache
