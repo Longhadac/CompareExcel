@@ -26,16 +26,19 @@ namespace CompareExcelFiles
             DataTable file2 = ParseExcelFile(txbFile2.Text);
 
             //Delete header rows
-            for(int i=0;i<13;i++)
+            int header = int.Parse(txbIgnoreHeaderRow.Text);
+            for(int i=0;i<header; i++)
             {
                 file1.Rows[i].Delete();
                 file2.Rows[i].Delete();
             }
             file1.AcceptChanges();
-            file2.AcceptChanges();            
-            
-            ExportToExcel(ReverseRowsInDataTable(CompareDataTable(file1, file2))
-                , ConfigurationManager.AppSettings.Get("ExportExcelFile"));
+            file2.AcceptChanges();
+
+            List<int> keys = ParseStringList(txbKeyColumn.Text);
+            List<int> compareValues = ParseStringList(txbCompareColumn.Text);
+            ExportToExcel(ReverseRowsInDataTable(CompareDataTable(file1, file2,keys,compareValues))
+                ,ConfigurationManager.AppSettings.Get("ExportExcelFile"));
         }
 
         private DataTable ParseExcelFile(string fileName)
@@ -77,7 +80,7 @@ namespace CompareExcelFiles
         }
 
         private DataTable CompareDataTable(DataTable file1, DataTable file2, 
-            List<string> keys, List<string> compareValues)
+            List<int> keys, List<int> compareValues)
         {
             DataTable result = file1.Clone();
             for (int i = file1.Rows.Count - 1; i >= 0; i--)
@@ -87,12 +90,15 @@ namespace CompareExcelFiles
                 for (int j = file2.Rows.Count - 1; j >= 0; j--)
                 {
                     DataRow row2 = file2.Rows[j];
-                    if ((row1[1].ToString() == row2[1].ToString())
-                        && (row1[3].ToString() == row2[3].ToString())
-                        && (row1[4].ToString() == row2[4].ToString())
-                        && (row1[5].ToString() == row2[5].ToString()))
+                    bool check = true;
+                    foreach(int key in keys)
                     {
-                        for (int k = 6; k < 35; k++)
+                        if (row1[key].ToString() != row2[key].ToString())
+                            check = false;
+                    }
+                    if(check)
+                    {
+                        foreach(int k in compareValues)
                         {
                             if (string.IsNullOrEmpty(row1[k].ToString()))
                             {
@@ -117,6 +123,16 @@ namespace CompareExcelFiles
                 result.Rows.Add(newRow.ItemArray);
                 file1.Rows[i].Delete();
                 file2.AcceptChanges();
+            }
+
+            //Data not found in file1: try to find row in result and insert into list
+            //@@TODO: NOT DONE
+            if(file2.Rows.Count > 0)
+            {
+                foreach(DataRow row in file2.Rows)
+                {
+                    result.Rows.Add(row.ItemArray);
+                }
             }
             return result;
         }
@@ -231,9 +247,32 @@ namespace CompareExcelFiles
             { }
         }
 
-        private List<string> ParseStringList(string list)
+        private List<int> ParseStringList(string list)
         {
-            return list.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries).ToList<string>();
-        }   
+            List<int> result = new List<int>();
+            if (list.Contains("-"))
+            {
+                List<string> temp = list.Split(new string[] { "-" },
+                   StringSplitOptions.RemoveEmptyEntries).ToList<string>();
+                int low = int.Parse(temp[0]);
+                int high = int.Parse(temp[1]);
+                for(int i=low;i<=high;i++)
+                    result.Add(i);
+            }
+            else
+            {
+                List<string> temp = list.Split(new string[] { "," }, 
+                    StringSplitOptions.RemoveEmptyEntries).ToList<string>();
+                result = temp.Select(int.Parse).ToList();
+            }
+            return result;
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            txbIgnoreHeaderRow.Text = ConfigurationManager.AppSettings.Get("IgnoreHeaderRow");
+            txbKeyColumn.Text = ConfigurationManager.AppSettings.Get("KeyColumn");
+            txbCompareColumn.Text = ConfigurationManager.AppSettings.Get("CompareColumn");
+        }
     }
 }
